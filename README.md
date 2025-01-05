@@ -1,7 +1,8 @@
 # Property Bidding App [Dart, Node Js, Sqlite]
 
 ## Overview
-a project evaluation assessment.
+A project evaluation assessment.
+I integrated google maps in this project, and displayed data using latitude and longitute passing it to the GoogleMap Component, unpaid version of the API restricts the street view therefore this project only shows a hybrid type of map with pin/marker.
 
 ## Key Features
 - **Bid Management**: Track bids, winning bids, and outbidded cases.
