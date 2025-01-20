@@ -1,10 +1,13 @@
 const express = require("express");
 const sqlite3 = require("sqlite3").verbose();
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocs = require("./swaggerConfig");
 const app = express();
 const port = 3000;
-
 const cors = require("cors");
+
 app.use(cors());
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 const db = new sqlite3.Database("./bidding_system.db", (err) => {
   if (err) return console.error(err.message);
@@ -66,12 +69,127 @@ const getUserLatestBidOfPropertyId = (req, res) => {
   });
 };
 
+/**
+ * @swagger
+ * /api/property-listings:
+ *   get:
+ *     tags: [property bidding]
+ *     summary: Get a list of property listings
+ *     description: Fetches all the property listings.
+ *     responses:
+ *       200:
+ *         description: A list of property listings
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                   street_address:
+ *                     type: string
+ *                   city_address:
+ *                     type: string
+ *                   current_winning_bid_amount:
+ *                     type: integer
+ *                   last_bid_value:
+ *                     type: integer
+ *                   images:
+ *                     type: array
+ *                     items:
+ *                        type: string
+ *                   lat:
+ *                     type: number
+ *                   long:
+ *                     type: number
+ *
+ */
 app.get("/api/property-listings", getPropertyListings);
+
+/**
+ * @swagger
+ * /api/user-bids:
+ *   get:
+ *     tags: [property bidding]
+ *     summary: Get a list of user bids
+ *     description: Fetches all the user bids.
+ *     responses:
+ *       200:
+ *         description: A list of user bids
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                   outbid_counts:
+ *                     type: integer
+ *                   active_counts:
+ *                     type: integer
+ *                   winning_bid_counts:
+ *                     type: integer
+ *
+ *
+ */
 app.get("/api/user-bids", getUserBids);
+/**
+ * @swagger
+ * /api/bid-list:
+ *   get:
+ *     tags: [property bidding]
+ *     summary: Get a list of bid list
+ *     description: Fetches all the bid list.
+ *     responses:
+ *       200:
+ *         description: A list of bid list
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                   property_id:
+ *                     type: integer
+ *                   user_id:
+ *                     type: integer
+ *                   bid_amount:
+ *                     type: integer
+ *
+ */
 app.get("/api/bid-list", getUserBidlist);
+/**
+ * @swagger
+ * /api/latest-bid:
+ *   get:
+ *     tags: [property bidding]
+ *     summary: Get a list of the latest highest bid for each properties.
+ *     description: Fetches all the latest winning bids.
+ *     responses:
+ *       200:
+ *         description: A list of winning bids
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   property_id:
+ *                     type: integer
+ *                   latest_bid:
+ *                     type: integer
+ *
+ */
 app.get("/api/latest-bid", getUserLatestBidOfPropertyId);
 
-// Start the server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
