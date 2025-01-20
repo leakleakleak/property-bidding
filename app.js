@@ -6,13 +6,11 @@ const port = 3000;
 const cors = require("cors");
 app.use(cors());
 
-// Initialize database
 const db = new sqlite3.Database("./bidding_system.db", (err) => {
   if (err) return console.error(err.message);
   console.log("Connected to the database.");
 });
 
-// Function to get all property listings
 const getPropertyListings = (req, res) => {
   db.all(`SELECT * FROM property_listing`, [], (err, rows) => {
     if (err) {
@@ -24,7 +22,6 @@ const getPropertyListings = (req, res) => {
   });
 };
 
-// Function to get all user bids
 const getUserBids = (req, res) => {
   db.all(`SELECT * FROM your_bids`, [], (err, rows) => {
     if (err) {
@@ -36,7 +33,6 @@ const getUserBids = (req, res) => {
   });
 };
 
-// Function to get bids_lst
 const getUserBidlist = (req, res) => {
   db.all(`SELECT * FROM bids`, [], (err, rows) => {
     if (err) {
@@ -48,9 +44,7 @@ const getUserBidlist = (req, res) => {
   });
 };
 
-// Function to get the latest bid for a property_id
 const getUserLatestBidOfPropertyId = (req, res) => {
-  // Query to fetch the latest bid for the given property_id
   const query = `
     SELECT property_id, MAX(bid_amount) AS latest_bid
     FROM bids
@@ -72,7 +66,6 @@ const getUserLatestBidOfPropertyId = (req, res) => {
   });
 };
 
-// Define routes
 app.get("/api/property-listings", getPropertyListings);
 app.get("/api/user-bids", getUserBids);
 app.get("/api/bid-list", getUserBidlist);
